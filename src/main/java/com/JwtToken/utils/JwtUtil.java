@@ -58,6 +58,9 @@ public class JwtUtil{
         return exp.before(new Date());
     }
 
+
+    //for checking the internal functionality of JWT Creation and Extraction
+    //Commit while running the Application
     public static void main(String[] args) {
         UserDetails user = new User("Shiva", "#$%", Set.of(new SimpleGrantedAuthority("ADMIN")));
         JwtUtil jwt = new JwtUtil();
