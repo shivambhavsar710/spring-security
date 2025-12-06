@@ -12,7 +12,7 @@ public class HomeController {
         return "Welcome to Spring Security";
     }
 
-    @GetMapping("/admin/test")
+    @GetMapping("/admin")
     public String admin(){
         return "Welcome admin";
     }
