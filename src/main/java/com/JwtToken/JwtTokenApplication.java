@@ -10,4 +10,10 @@ public class JwtTokenApplication {
 		SpringApplication.run(JwtTokenApplication.class, args);
 	}
 
+//
+//    {
+//        "username": "shivam",
+//            "password": "shiv123",
+//            "role": "ROLE_ADMIN"
+//    }
 }

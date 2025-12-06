@@ -1,6 +1,7 @@
 package com.JwtToken.utils;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -22,35 +23,34 @@ public class JwtUtil{
 
     private final long EXP = 3600 * 1000;
 
-    private final SecretKey mySignInKey = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+    private SecretKey mySigninKey = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
 
     public String generateToken(UserDetails userDetails){
-
         String role = userDetails.getAuthorities().iterator().next().getAuthority();
 
-        return Jwts
-                .builder()
+        return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXP))
+                .setExpiration(new Date(System.currentTimeMillis()+EXP))
+                .signWith(mySigninKey, SignatureAlgorithm.HS512)
                 .claim("role",role)
-                .signWith(mySignInKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public Claims extractAllClaims(String token){
-
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(mySignInKey)
+        return Jwts.parserBuilder()
+                .setSigningKey(mySigninKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-
     }
 
     public String getSubject(String token){
         return extractAllClaims(token).getSubject();
+    }
+
+    public Date getExpiration(String token){
+        return extractAllClaims(token).getExpiration();
     }
 
     public boolean isTokenExpired(String token){
@@ -59,12 +59,15 @@ public class JwtUtil{
     }
 
     public static void main(String[] args) {
-        UserDetails user = new User("Shiva", "#$%", Set.of(new SimpleGrantedAuthority("ADMIN")));
+        UserDetails user = new User("Shiv","1234",Set.of(new SimpleGrantedAuthority("ADMIN")));
         JwtUtil jwt = new JwtUtil();
+
         String token = jwt.generateToken(user);
+
         System.out.println(token);
         System.out.println(jwt.getSubject(token));
         System.out.println(jwt.isTokenExpired(token));
-    }
 
+    }
 }
+
